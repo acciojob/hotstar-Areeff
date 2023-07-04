@@ -7,7 +7,7 @@ import com.driver.repository.ProductionHouseRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+//import java.util.ArrayList;
 
 @Service
 public class ProductionHouseService {
@@ -19,7 +19,7 @@ public class ProductionHouseService {
 
         ProductionHouse productionHouse=new ProductionHouse();
         productionHouse.setName(productionHouseEntryDto.getName());
-        //productionHouse.setRatings(0);
+        productionHouse.setRatings(0);
         //productionHouse.setWebSeriesList(new ArrayList<>());
         productionHouseRepository.save(productionHouse);
         return productionHouse.getId();
