@@ -53,8 +53,21 @@ public class SubscriptionService {
         //If you are already at an ElITE subscription : then throw Exception ("Already the best Subscription")
         //In all other cases just try to upgrade the subscription and tell the difference of price that user has to pay
         //update the subscription in the repository
-
-        return null;
+        Integer amountTobePaid=0;
+        User user=userRepository.findById(userId).get();
+        if(user.getSubscription().getSubscriptionType()==SubscriptionType.ELITE){
+            throw new Exception("Already the best Subscription");
+        }
+        else if(user.getSubscription().getSubscriptionType()==SubscriptionType.PRO){
+            user.getSubscription().setSubscriptionType(SubscriptionType.ELITE);
+            amountTobePaid=200+(100*user.getSubscription().getNoOfScreensSubscribed());
+        }
+        else{
+            user.getSubscription().setSubscriptionType(SubscriptionType.PRO);
+            amountTobePaid=300+(50*user.getSubscription().getNoOfScreensSubscribed());
+        }
+        userRepository.save(user);
+        return amountTobePaid;
     }
 
     public Integer calculateTotalRevenueOfHotstar(){
