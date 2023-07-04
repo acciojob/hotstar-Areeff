@@ -8,6 +8,9 @@ import com.driver.repository.WebSeriesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Objects;
+
 @Service
 public class WebSeriesService {
 
@@ -24,7 +27,24 @@ public class WebSeriesService {
         //use function written in Repository Layer for the same
         //Dont forget to save the production and webseries Repo
 
-        return null;
+        ProductionHouse productionHouse=productionHouseRepository.findById(webSeriesEntryDto.getProductionHouseId()).get();
+        if(Objects.nonNull(webSeriesRepository.findBySeriesName(webSeriesEntryDto.getSeriesName()))){
+            throw new Exception("Seires is already present");
+        }
+        WebSeries webSeries=new WebSeries();
+        webSeries.setSeriesName(webSeriesEntryDto.getSeriesName());
+        webSeries.setAgeLimit(webSeriesEntryDto.getAgeLimit());
+        webSeries.setRating(webSeriesEntryDto.getRating());
+        webSeries.setSubscriptionType(webSeriesEntryDto.getSubscriptionType());
+        List<WebSeries>webSeriesList=productionHouse.getWebSeriesList();
+        double ratingOfProductionHouse=productionHouse.getRatings();
+        double finalRating=((ratingOfProductionHouse*webSeriesList.size())+webSeriesEntryDto.getRating())/(webSeriesList.size()+1);
+        productionHouse.setRatings(finalRating);
+        productionHouse.getWebSeriesList().add(webSeries);
+        webSeries.setProductionHouse(productionHouse);
+        WebSeries webSeries1=webSeriesRepository.save(webSeries);
+        productionHouseRepository.save(productionHouse);
+        return webSeries1.getId();
     }
 
 }
